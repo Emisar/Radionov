@@ -1,0 +1,26 @@
+.task {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.field {
+    display: flex;
+    flex-flow: column;
+}
+
+.field * {
+    margin: 5px;
+}
+
+.text_area {
+    width: 25em;
+    height: 15em;
+    resize: none;
+
+    border: 2px solid green;
+}
+
+.input_button {
+    width: 10em;
+    height: 2em;
+}
