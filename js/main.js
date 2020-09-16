@@ -14,7 +14,13 @@ function addEvent() {
                 matrix[i].push(temp[j] - 0);
             }
         }
-        let result = jordan(matrix, 2, 3);
+
+        let inputRow = document.getElementById("row");
+        let inputCol = document.getElementById("col");
+
+        let row = inputRow.value - 0;
+        let col = inputCol.value - 0;
+        let result = jordan(matrix, row, col);
         output(result);
     })
 }
