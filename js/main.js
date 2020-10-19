@@ -43,7 +43,6 @@ function solve() {
             // Выводим ответ
             output(result, topVector, sideVector);
         }
-        
     })
 }
 
