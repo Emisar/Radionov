@@ -8,8 +8,8 @@ function solve() {
         else {
             // Чиатем вводные данные
             let input = document.getElementById("inputArea").value;     // Матрица значений
-            let row = document.getElementById("row").value - 1;    // Номер строки для обмена
-            let col = document.getElementById("col").value - 1;    // Номер столбца для обмена
+            let inputRow = document.getElementById("row").value - 1;    // Номер строки для обмена
+            let inputCol = document.getElementById("col").value - 1;    // Номер столбца для обмена
 
             // Преобразовываем вводные данные в матрицу
             let inputMatrix = new Array();
@@ -30,12 +30,12 @@ function solve() {
             let matrix = inputMatrix;
 
             // Меняем указанные строки и столбцы в матрице
-            let result = jordan(matrix, row, col);
+            let result = jordan(matrix, inputRow, inputCol);
 
             // Меняем указанные строки и столбцы у векторов боковых и верхних значений
-            let cup = sideVector[row];
-            sideVector[row] = (topVector[col] == 0) ? topVector[col] : topVector[col].substring(1);
-            topVector[col] = (cup == 0) ? cup : "-" + cup;
+            let cup = sideVector[inputRow];
+            sideVector[inputRow] = (topVector[inputCol] == 0) ? topVector[inputCol] : topVector[inputCol].substring(1);
+            topVector[inputCol] = (cup == 0) ? cup : "-" + cup;
 
             // Убираем лишние нули из вектора верхних значений
             topVector = topVector.filter((n) => { return n != 0 });
