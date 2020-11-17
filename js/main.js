@@ -39,7 +39,7 @@ function solve() {
 
             // Убираем лишние нули из вектора верхних значений
             topVector = topVector.filter((n) => { return n != 0 });
-
+            finalAnswer(sideVector, topVector, result);
             // Выводим ответ
             output(result, topVector, sideVector);
         }
@@ -89,7 +89,7 @@ function output(matrix, topVector, sideVector) {
 function deleteColumn(a, n) {
     /*
         a - массив. где удаляем строку
-        r - номер колонки, которую удаляем
+        n - номер колонки, которую удаляем
     */
     var newArr = [];
     for(var i = 0; i < a.length; i++) {
@@ -125,7 +125,30 @@ function jordan(matrix, row, column) {
     tempMatrix[row][column] = 1 / matrix[row][column];
     // Удаляем обнулившееся значение
     tempMatrix = deleteColumn(tempMatrix, column);
+    console.log(tempMatrix);
     return tempMatrix;
+    
+}
+
+function finalAnswer(sideVector, topVector, result) {
+    // Строка на вывод с начальным отступом
+    let tempString = "     ";
+    // Заполняем матрицу
+    for (let i = 0; i < sideVector.length; i++) {
+        // Новая строка матрицы
+        tempString += "\n";
+        // Пишем заголовок строки
+        tempString += sideVector[i] + " = ";
+        tempString += (sideVector[i] == 0) ? "   " : "   ";    // Отступы для выравнивания по левому краю (4 для нуля и 3 для слова)
+        // Пишем числа матрицы
+        for (let j = 0; j < result[i].length; j++) {
+            if (result[i][j] >= 0) tempString += " ";  // Отступ если нет знака (-/+)
+            if (result[i][j] != 0) tempString += " " + topVector[j] + " * " +result[i][j].toFixed(2); 
+            
+        }
+    }
+    // Выводим получившуюся строку
+    document.getElementById("answer").value = tempString;
 }
 
 
