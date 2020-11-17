@@ -1,0 +1,151 @@
+<!DOCTYPE <!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MatProg</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/task2.css" />
+    <script src="js/main.js"></script>
+    <script src="js/task2.js"></script>
+</head>
+
+<body>
+    <div class="tabs">
+        <input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
+        <label for="tab-btn-1">Задание 1</label>
+        <input type="radio" name="tab-btn" id="tab-btn-2" value="">
+        <label for="tab-btn-2">Задание 2</label>
+        <input type="radio" name="tab-btn" id="tab-btn-3" value="">
+        <label for="tab-btn-3">Задание 3</label>
+
+        <div id="lab1">
+            <div class="task">
+                <div class="field">
+                    <span class="title">Введите матрицу:</span>
+                    <textarea class="text_area" id="inputArea"></textarea>
+                    <span class="title">Введите номер строки и столбца:</span>
+                    <div class="row_and_col">
+                        <input type="text" class="val_input" id="row">
+                        <input type="text" class="val_input" id="col">
+                    </div>
+                    <div class="buttons">
+                        <button class="input_button" id="inputButton">Ввод</button>
+                        <button id="clearButton">Убрать всё</button>
+                        <button id="changeButton">Вывод в ввод</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <span class="title">Вывод:</span>
+                    <textarea class="text_area" id="outputArea" rows="10" cols="45" disabled></textarea>
+                </div>
+                <div>
+                    <textarea id="answer" class="text_area" cols="10" rows="45"></textarea>
+                </div>
+            </div>
+        </div>
+        <div id="lab2">
+            <div class="task_2">
+                <div class="task_2-input_wraper hide">
+                    <div class="task_2-input_fields">
+                        <div class="task_2-input_field">
+                            <span class="task_2-input_title"> Кол-во переменных:</span>
+                            <input type="number" class="task_2-input_box" min="1">
+                        </div>
+                        <div class="task_2-input_field">
+                            <span class="task_2-input_title"> Кол-во уравнений:</span>
+                            <input type="number" class="task_2-input_box" min="1">
+                        </div>
+                    </div>
+                    <button id="submit_input_fields">Submit</button>
+                </div>
+                <div class="task_2-input_matrix">
+                    <table class="task_2-input_table">
+                        <tr class="task_2-input_table_row_title">
+                            <th class="task_2-input_table_title_elem">x1</th>
+                            <th class="task_2-input_table_title_elem">x2</th>
+                            <th class="task_2-input_table_title_elem">x3</th>
+                            <th class="task_2-input_table_title_elem">Знак</th>
+                            <th class="task_2-input_table_title_elem">Св члены</th>
+                        </tr>
+                        <tr class="task_2-input_table_row">
+                            <td class="task_2-input_table_elem">
+                                <input type="number" class="task_2-input_table_field" min="1">
+                            </td>
+                            <td class="task_2-input_table_elem">
+                                <input type="number" class="task_2-input_table_field" min="1">
+                            </td>
+                            <td class="task_2-input_table_elem">
+                                <input type="number" class="task_2-input_table_field" min="1">
+                            </td>
+                            <td class="task_2-input_table_elem">
+                                <select class="task_2-input_table_select">
+                                    <option value="=">=</option>
+                                    <option value=">=">>=</option>
+                                    <option value="<="><=</option>
+                                </select>
+                            </td>
+                            <td class="task_2-input_table_elem">
+                                <input type="number" class="task_2-input_table_field" min="1">
+                            </td>
+                        </tr>
+                        <tr class="task_2-input_table_row">
+                            <td class="task_2-input_table_elem">1</td>
+                            <td class="task_2-input_table_elem">1</td>
+                            <td class="task_2-input_table_elem">1</td>
+                            <td class="task_2-input_table_elem">=</td>
+                            <td class="task_2-input_table_elem">1</td>
+                        </tr>
+                        <tr class="task_2-input_table_row">
+                            <td class="task_2-input_table_elem">1</td>
+                            <td class="task_2-input_table_elem">1</td>
+                            <td class="task_2-input_table_elem">1</td>
+                            <td class="task_2-input_table_elem">=</td>
+                            <td class="task_2-input_table_elem">1</td>
+                        </tr>
+                    </table>
+                    <button id="submit_input_matrix">Submit</button>
+                </div>
+                <div class="task_2-output hide">
+                    <table class="task_2-output_table">
+                        <tr class="task_2-table_row_title">
+                            <th class="task_2-table_title_elem">x1</th>
+                            <th class="task_2-table_title_elem">x2</th>
+                            <th class="task_2-table_title_elem">x3</th>
+                            <th class="task_2-table_title_elem">Знак</th>
+                            <th class="task_2-table_title_elem">Св члены</th>
+                        </tr>
+                        <tr class="task_2-table_row">
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">=</td>
+                            <td class="task_2-table_elem">1</td>
+                        </tr>
+                        <tr class="task_2-table_row">
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">=</td>
+                            <td class="task_2-table_elem">1</td>
+                        </tr>
+                        <tr class="task_2-table_row">
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">1</td>
+                            <td class="task_2-table_elem">=</td>
+                            <td class="task_2-table_elem">1</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="lab3">
+            <img src="img/cat.jpg" alt="Очень грустно" width="200" height="200">
+        </div>
+    </div>
+</body>
+
+</html>
