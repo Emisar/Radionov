@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/task2.css" />
     <script src="js/main.js"></script>
+    <script src="js/table.js"></script>
     <script src="js/task2.js"></script>
 </head>
 
@@ -48,97 +49,26 @@
         </div>
         <div id="lab2">
             <div class="task_2">
-                <div class="task_2-input_wraper hide">
-                    <div class="task_2-input_fields">
-                        <div class="task_2-input_field">
-                            <span class="task_2-input_title"> Кол-во переменных:</span>
-                            <input type="number" class="task_2-input_box" min="1">
+                <div class="task_2-section">
+                    <div class="task_2-prop_blocks">
+                        <div class="task_2-prop_block">
+                            <span class="task_2-prop_block-title"> Кол-во переменных:</span>
+                            <input type="number" class="task_2-prop_block-input_field" min="1" value="1">
                         </div>
-                        <div class="task_2-input_field">
-                            <span class="task_2-input_title"> Кол-во уравнений:</span>
-                            <input type="number" class="task_2-input_box" min="1">
+                        <div class="task_2-prop_block">
+                            <span class="task_2-prop_block-title"> Кол-во уравнений:</span>
+                            <input type="number" class="task_2-prop_block-input_field" min="1" value="1">
                         </div>
                     </div>
-                    <button id="submit_input_fields">Submit</button>
+                    <button class="task_2-submit_button">Submit</button>
                 </div>
-                <div class="task_2-input_matrix">
-                    <table class="task_2-input_table">
-                        <tr class="task_2-input_table_row_title">
-                            <th class="task_2-input_table_title_elem">x1</th>
-                            <th class="task_2-input_table_title_elem">x2</th>
-                            <th class="task_2-input_table_title_elem">x3</th>
-                            <th class="task_2-input_table_title_elem">Знак</th>
-                            <th class="task_2-input_table_title_elem">Св члены</th>
-                        </tr>
-                        <tr class="task_2-input_table_row">
-                            <td class="task_2-input_table_elem">
-                                <input type="number" class="task_2-input_table_field" min="1">
-                            </td>
-                            <td class="task_2-input_table_elem">
-                                <input type="number" class="task_2-input_table_field" min="1">
-                            </td>
-                            <td class="task_2-input_table_elem">
-                                <input type="number" class="task_2-input_table_field" min="1">
-                            </td>
-                            <td class="task_2-input_table_elem">
-                                <select class="task_2-input_table_select">
-                                    <option value="=">=</option>
-                                    <option value=">=">>=</option>
-                                    <option value="<="><=</option>
-                                </select>
-                            </td>
-                            <td class="task_2-input_table_elem">
-                                <input type="number" class="task_2-input_table_field" min="1">
-                            </td>
-                        </tr>
-                        <tr class="task_2-input_table_row">
-                            <td class="task_2-input_table_elem">1</td>
-                            <td class="task_2-input_table_elem">1</td>
-                            <td class="task_2-input_table_elem">1</td>
-                            <td class="task_2-input_table_elem">=</td>
-                            <td class="task_2-input_table_elem">1</td>
-                        </tr>
-                        <tr class="task_2-input_table_row">
-                            <td class="task_2-input_table_elem">1</td>
-                            <td class="task_2-input_table_elem">1</td>
-                            <td class="task_2-input_table_elem">1</td>
-                            <td class="task_2-input_table_elem">=</td>
-                            <td class="task_2-input_table_elem">1</td>
-                        </tr>
-                    </table>
-                    <button id="submit_input_matrix">Submit</button>
+                <div class="task_2-section hide">
+                    <div class="task_2-tables_div"></div>
+                    <button class="task_2-submit_button" id="submit_matrix">Submit</button>
                 </div>
-                <div class="task_2-output hide">
-                    <table class="task_2-output_table">
-                        <tr class="task_2-table_row_title">
-                            <th class="task_2-table_title_elem">x1</th>
-                            <th class="task_2-table_title_elem">x2</th>
-                            <th class="task_2-table_title_elem">x3</th>
-                            <th class="task_2-table_title_elem">Знак</th>
-                            <th class="task_2-table_title_elem">Св члены</th>
-                        </tr>
-                        <tr class="task_2-table_row">
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">=</td>
-                            <td class="task_2-table_elem">1</td>
-                        </tr>
-                        <tr class="task_2-table_row">
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">=</td>
-                            <td class="task_2-table_elem">1</td>
-                        </tr>
-                        <tr class="task_2-table_row">
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">1</td>
-                            <td class="task_2-table_elem">=</td>
-                            <td class="task_2-table_elem">1</td>
-                        </tr>
-                    </table>
+                <div class="task_2-section hide">
+                    <div class="task_2-tables_div"></div>
+                    <button class="task_2-submit_button" id="submit_matrix">Submit</button>
                 </div>
             </div>
         </div>
