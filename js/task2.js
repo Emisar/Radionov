@@ -159,10 +159,11 @@ window.onload = () => {
     // Берем кнопки из первых двух разделов
     let buttons = [
         sections[0].querySelector("." + SUBMIT_BUTTON_CLASS),
-        sections[1].querySelector("." + SUBMIT_BUTTON_CLASS)
+        sections[1].querySelector("." + SUBMIT_BUTTON_CLASS),
+        sections[2].querySelector("." + SUBMIT_BUTTON_CLASS)
     ];
     // Навешиваем на событие "click" действие по "переключению" разделов
-    buttons.forEach((button, index) => {
+    [buttons[0], buttons[1]].forEach((button, index) => {
         button.addEventListener("click", () => switchSection(sections[index], sections[index + 1]));
     });
 

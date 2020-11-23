@@ -79,7 +79,7 @@
 }
 
 .selected {
-    background-color: #c94c4c;
+    background-color: #c94c4c !important;
 }
 
 .hide {
