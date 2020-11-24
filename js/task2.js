@@ -29,6 +29,25 @@ function switchSection(section1, section2) {
     }
 }
 
+function addSelected(table) {
+    for (let i = 0; i < table.rows.length; i++) {
+        for (let j = 1; j < table.rows[i].cells.length; j++) {
+            let elem = table.rows[i].cells[j];
+            elem.addEventListener("click", ()=> {
+                for (let i = 0; i < table.rows.length; i++) {
+                    for (let j = 0; j < table.rows[i].cells.length; j++) {
+                        let tableElem = table.rows[i].cells[j];
+                        if (tableElem.classList.contains("selected")){
+                            tableElem.classList.remove("selected");
+                        }
+                    }
+                }
+                elem.classList.add("selected");
+            });
+        }
+    }
+}
+
 /**
  * Функция создания таблицы из введенных значений
  * 
@@ -45,7 +64,12 @@ function createOutputMatrix(section) {
         for (let j = 0; j < inputTable.rows[i].cells.length; j++) {
             let elem = inputTable.rows[i].cells[j];
             let value = elem.children[0].value;
-            matrix[i][j] = value;
+            if (j != 0) {
+                matrix[i][j] = (inputTable.rows[i].cells[1].children[0].value < 0) ? -value : value;
+            }
+            else {
+                matrix[i][j] = value;
+            }
         }
     }
     /*
@@ -62,10 +86,28 @@ function createOutputMatrix(section) {
         for (let j = 0; j < matrix[i].length; j++) {
             table[i][j] = {
                 // Если это первая строка, то ячейки будут заголовочными
-                elemType: (i == 0) ? "th" : "td",
+                elemType: (i == 0 || j == 0) ? "th" : "td",
                 contentType: TEXT_TYPE,
                 value: matrix[i][j]
             }   
+        }
+    }
+    // Функция G
+    table[matrix.length] = [];
+    table[matrix.length][0] = {
+        elemType: "th",
+        contentType: TEXT_TYPE,
+        value: "g"
+    }
+    for (let j = 1; j < matrix[matrix.length - 1].length; j++) {
+        let sum = 0;
+        for (let i = 1; i < matrix.length - 1; i++) {
+            sum += matrix[i][j] - 0;
+        }
+        table[matrix.length][j] = {
+            elemType: "td",
+            contentType: TEXT_TYPE,
+            value: -sum || "0"
         }
     }
     options.table = table;
@@ -105,40 +147,58 @@ function createInputMatrix(section) {
     // Их количество пропорционально количеству переменных в уравнении
     let table = [];
     table[0] = [];
+    table[0][0] = {
+        elemType: "th",
+        contentType: TEXT_TYPE,
+        value: ""
+    }
+    table[0][1] = {
+        elemType: "th",
+        contentType: TEXT_TYPE,
+        value: "1"
+    }
     for (let i = 0; i < n; i++) {
-        table[0][i] = {
+        table[0][i + 2] = {
             elemType: "th",
             contentType: TEXT_TYPE,
             value: "x" + (i + 1)
         }
     }
-    table[0][n] = {
-        elemType: "th",
-        contentType: TEXT_TYPE,
-        value: "Знак"
-    }
-    table[0][n + 1] = {
-        elemType: "th",
-        contentType: TEXT_TYPE,
-        value: "Св член"
-    }
     // Добавляем описание всех остальных ячеек таблицы
-    for (let i = 1; i < m + 1; i++) {
+    for (let i = 1; i <= m; i++) {
         table[i] = [];
-        for (let j = 0; j < n + 2; j++) {
-            if (j != n) {
-                table[i][j] = {
-                    elemType: "td",
-                    contentType: INPUT_TYPE
-                }
+        table[i][0] = {
+            elemType: "th",
+            contentType: TEXT_TYPE,
+            value: "x" + (n + i)
+        }
+        table[i][1] = {
+            elemType: "td",
+            contentType: INPUT_TYPE
+        }
+        for (let j = 0; j < n; j++) {
+            table[i][j + 2] = {
+                elemType: "td",
+                contentType: INPUT_TYPE
             }
-            else {
-                table[i][j] = {
-                    elemType: "td",
-                    contentType: SELECT_TYPE,
-                    selectOptions: ["=", ">=", "<="]
-                }
-            }
+        }
+    }
+    // Целевая функция
+    table[m + 1] = [];
+    table[m + 1][0] = {
+        elemType: "th",
+        contentType: TEXT_TYPE,
+        value: "f"
+    }
+    table[m + 1][1] = {
+        elemType: "th",
+        contentType: TEXT_TYPE,
+        value: "0"
+    }
+    for (let j = 0; j < n; j++) {
+        table[m + 1][j + 2] = {
+            elemType: "td",
+            contentType: INPUT_TYPE
         }
     }
     options.table = table;
