@@ -2,24 +2,70 @@
 * Описание полей объекта options
 * 
 * options.
-*        .clazz - css-класс таблицы
 *        .title - текст в блоке <caption> (заголовок таблицы)
 *        .table - описание содержимого таблицы. Является двумерной матрицей
 *        .table[][] - описание ячеек таблицы
 *         
 * options.table[][].
 *                  .elemType - Тип элемента таблицы (th - <th> - заголовочкая ячейка, td - <td> - обычная ячейка)
+*                  .elemClass - Класс ячейки таблицы (опционален)
 *                  .contentType - Тип содержимого ячейки. (SELECT_TYPE - <select>, INPUT_TYPE - <input>, TEXT_TYPE - <span>)
 *                  .value (параметр обязательный при contentType: TEXT_TYPE) - значение текстового поля
 *                  .selectOptions (параметр обязательный при contentType: SELECT_TYPE) - массив значений блоков <option> у блока <select>
 */
 
-const SELECT_CLASS = "task_2-input_table-select";
-const TABLE_INPUT_FIELD_CLASS = "task_2-input_table-input_field";
-
 const SELECT_TYPE = "select";
 const INPUT_TYPE = "input";
 const TEXT_TYPE = "value";
+
+/**
+ * Функция создания описания выходной таблицы
+ * 
+ * @param {String} tableClass - класс таблицы
+ * @param {String} tableTitle - текст заголовка таблицы
+ * @param {Array of Array} matrix - матрица значений таблицы
+ */
+function createOutputOptions(tableTitle, matrix) {
+    // Добавляем класс и заголовок
+    let options = {
+        title: tableTitle
+    }
+    // Добавляем описание ячеек таблицы
+    let table = [];
+    for (let i = 0; i < matrix.length; i++) {
+        table[i] = [];
+        for (let j = 0; j < matrix[i].length; j++) {
+            table[i][j] = {
+                // Если это первая строка или столбец, то ячейки будут заголовочными
+                elemType: (i == 0 || j == 0) ? "th" : "td",
+                contentType: TEXT_TYPE,
+                value: matrix[i][j] + ""
+            }
+        }
+    }
+    options.table = table;
+    // Возращаем готовое описание
+    return options;
+}
+
+/**
+ * Функция создания матрицы из таблицы
+ * 
+ * @param {Node} table - таблица для перевода в матрицу
+ */
+function tableToMatrix(table) {
+    let matrix = [];
+    for (let i = 0; i < table.rows.length; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < table.rows[i].cells.length; j++) {
+            let elem = table.rows[i].cells[j];
+            let value = elem.children[0].value;
+            matrix[i][j] = (i == 0 || j == 0) ? value : value - 0;
+        }
+    }
+    // Возращаем готовую матрицу
+    return matrix;
+}
 
 /**
  * Функция создания таблицы
@@ -28,12 +74,10 @@ const TEXT_TYPE = "value";
  */
 function createTable(options) {
     // Разархивируем поля объекта-описания
-    let clazz = options.clazz;  // Класс таблицы
     let title = options.title;  // Заголовок
     let table = options.table;  // Описание ячеек (матрица объектов)
-    // Создаем таблицу и добавляем её класс
+    // Создаем таблицу
     let newTable = document.createElement("table");
-    newTable.classList.add(clazz);
     // Создаем заголовок таблицы
     let caption = document.createElement("caption");
     caption.innerHTML = title;
@@ -72,11 +116,14 @@ function createTableRow(options) {
 function createTableElem(options) {
     // Разархивируем поля объекта-описания
     let elemType = options.elemType;    // Тип ячейки
+    let elemClass = options.elemClass;  // Класс ячейки
     let contentType = options.contentType;  // Тип содержимого ячейки
     let selectOptions = options.selectOptions || null;  // Массив значений блоков <option> у блока <select>
     let value = options.value || null;  // Значение текстового поля
-    // Создаем ячейку таблицы 
+    // Создаем ячейку таблицы
     let elem = document.createElement(elemType);
+    // Если передан класс, то устанавливаем его
+    if (elemClass != null) elem.classList.add(elemClass);
     // Добавляем содержимое для ячейки
     let content;
     switch (contentType) {
@@ -101,9 +148,8 @@ function createTableElem(options) {
  * @param {Array} options - массив значений для блоков <option>
  */
 function createSelect(options) {
-    // Создаем <select> и добавляем его класс
+    // Создаем <select>
     let select = document.createElement("select");
-    select.classList.add(SELECT_CLASS);
     // Добавляем блоки <option>
     options.forEach(option => {
         let selectElem = document.createElement("option");
@@ -119,9 +165,8 @@ function createSelect(options) {
  * Функция создания содержимого типа <input> для ячейки таблицы
  */
 function createInput() {
-    // Создаем <input> и добавляем его класс
+    // Создаем <input>
     let input = document.createElement("input");
-    input.classList.add(TABLE_INPUT_FIELD_CLASS);
     // Устанавливает тип вводимых значений и начальное значение
     input.type = "number";
     input.value = 0;

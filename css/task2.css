@@ -1,87 +1,104 @@
+/* Общие стили секций */
 .task_2-section {
     display: flex;
     flex-flow: column;
     align-items: flex-start;
     padding: 0.25em 0;
 }
-
 .task_2-section > * {
     margin: 0.25em 0
 }
 
+/* Стили первой секции */
 .task_2-prop_blocks {
     display: flex;
     flex-flow: row;
 }
-
 .task_2-prop_block {
     display: flex;
     flex-flow: column;
     margin-right: 1em;
 }
-
-.task_2-input_table {
-    border: 1px solid black;
+.task_2-prop_block > * {
+    margin: 0.25em 0
 }
-
-.task_2-input_table caption {
-    text-align: start;
-    font-size: 20;
-}
-
-.task_2-input_table th {
-    border: 2px solid black;
-}
-
-.task_2-input_table td {
-    border: 2px solid black;
-}
-
-.task_2-input_table-input_field {
-    background-color: #92a8d1;
+.task_2-prop_block-input_field {
+    padding: 5px;
     border: none;
-    height: 1.5em;
-    width: 5em;
-    font-weight: bolder;
+    border-top: 1px solid;
+    border-bottom: 1px solid;
 }
 
-.task_2-input_table-select {
-    height: 1.5em;
-    width: 5em;
-    background-color: #92a8d1;
-    border: none;
+/* Стили кнопок */
+.task_2-submit_button {
+    border-radius: 4px;
+    color: #fff;
+    width: 100px;
+    height: 2.5em;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    background-color: green;
+    border: 1px solid green;
+}
+.task_2-submit_button:hover {
+    background-color: rgb(70, 178, 70);
 }
 
-.task_2-output_table {
-    border: 1px solid black;
+/* Стили блоков таблиц */
+.task_2-tables_div {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    padding: 0.25em 0;
+}
+.task_2-tables_div > * {
+    margin: 0.25em 0
 }
 
-.task_2-output_table caption {
+/* Стили таблиц */
+.task_2-tables_div table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border-collapse: collapse;
+    text-align: center;
+}
+.task_2-tables_div caption {
     text-align: start;
-    font-size: 20;
+    font-size: 16px;
+    border-bottom: 1px solid;
+}
+.task_2-tables_div th {
+    background: #AFCDE7;
+    color: white;
+    padding: 10px 20px;
+}
+.task_2-tables_div th, 
+.task_2-tables_div td {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    border-color: white;
+}
+.task_2-tables_div td {
+    background: #d8e6f3;
+    width: 9em;
 }
 
-.task_2-output_table th {
-    border: 2px solid black;
+/* Стили содержимого таблиц */
+.task_2-tables_div td > * {
+    font-family: inherit;
+    font-size: inherit;
+    border: none;
+    width: 100%;
+    height: 2em;
+    text-align: center;
+    background-color: #fff0;
 }
 
-.task_2-output_table td {
-    border: 2px solid black;
-    background-color: #92a8d1;
-    height: 1.5em;
-    width: 5em;
-    padding: 1px 2px;
-    font-weight: bolder;
-}
-
-.active td:hover {
-    background-color: #eea29a;
-}
-
+/* Функциональные стили*/
 .selected {
-    background-color: #c94c4c !important;
+    background: pink !important;
 }
-
 .hide {
     display: none;
 }

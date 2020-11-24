@@ -1,11 +1,7 @@
 const SECTION_CLASS = "task_2-section";
+const INPUT_FIELD_CLASS = "task_2-prop_block-input_field";
 const SUBMIT_BUTTON_CLASS = "task_2-submit_button";
 const TABLES_DIV = "task_2-tables_div";
-
-const INPUT_FIELD_CLASS = "task_2-prop_block-input_field";
-
-const INPUT_TABLE_CLASS = "task_2-input_table";
-const OUTPUT_TABLE_CLASS = "task_2-output_table";
 
 /**
  * Функция для переключениями между секциями
@@ -29,23 +25,47 @@ function switchSection(section1, section2) {
     }
 }
 
-function addSelected(table) {
-    for (let i = 0; i < table.rows.length; i++) {
-        for (let j = 1; j < table.rows[i].cells.length; j++) {
-            let elem = table.rows[i].cells[j];
-            elem.addEventListener("click", ()=> {
-                for (let i = 0; i < table.rows.length; i++) {
-                    for (let j = 0; j < table.rows[i].cells.length; j++) {
-                        let tableElem = table.rows[i].cells[j];
-                        if (tableElem.classList.contains("selected")){
-                            tableElem.classList.remove("selected");
-                        }
-                    }
-                }
-                elem.classList.add("selected");
-            });
+/**
+ * Функция для пересчета матрицы
+ * 
+ * @param {Array of Array} matrix - матрица значений таблицы
+ */
+function recountMatrix(matrix) {
+    // Избаляемся от отрицательных чисел на свободном члене
+    for (let i = 0; i < matrix.length - 1; i++) {
+        if (matrix[i][1] < 0) {
+            for (let j = 1; j < matrix[i].length; j++) {
+                matrix[i][j] *= -1;
+            }
         }
     }
+    let row = 1;
+    let col = 1;
+
+
+    // Возвращаем готовую матрицу
+    return {row, col, matrix};
+}
+
+/**
+ * Функция создания новой таблицы из матрицы.
+ * Старая матрица пересчитывается и создается новая из которой создается таблица
+ * 
+ * @param {Array of Array} matrix - матрица старой таблицы
+ * @param {Integer} order - порядковый номер новой таблицы
+ */
+function createNextTable(matrix, order) {
+    // Пересчитываем матрицу
+    const recount = recountMatrix(matrix);
+    matrix = recount.matrix;
+    // Создаем описание таблицы
+    let options = createOutputOptions("Step " + order + ":", matrix);
+    // Создаем таблицу по описанию и возвращаем её 
+    return {
+        row: recount.row,
+        col: recount.col,
+        table: createTable(options)
+    };
 }
 
 /**
@@ -53,64 +73,28 @@ function addSelected(table) {
  * 
  * @param {Node} section - секция из которой будут браться данные для создания таблицы
  */
-function createOutputMatrix(section) {
-    /*
-    * Считываем таблицу с введенными значениями и заносим значения в матрицу
-    */
-    let inputTable = section.querySelector("." + INPUT_TABLE_CLASS);
-    let matrix = [];
-    for (let i = 0; i < inputTable.rows.length; i++) {
-        matrix[i] = [];
-        for (let j = 0; j < inputTable.rows[i].cells.length; j++) {
-            let elem = inputTable.rows[i].cells[j];
-            let value = elem.children[0].value;
-            if (j != 0) {
-                matrix[i][j] = (inputTable.rows[i].cells[1].children[0].value < 0) ? -value : value;
-            }
-            else {
-                matrix[i][j] = value;
-            }
-        }
-    }
-    /*
-     * Создаем описание таблицы
-     */
-    // Задаем класс таблицы и её заголовок
-    let options = {};
-    options.clazz = OUTPUT_TABLE_CLASS;
-    options.title = "Step 0";
-    // Добавляем описание ячеек таблицы соответственно полученной матрицы
-    let table = [];
+function createOutputTable(inputTable) {
+    // Переводим таблицу в матрицу и избавляемся от отрицательных чисел на свободном члене
+    let matrix = tableToMatrix(inputTable);
     for (let i = 0; i < matrix.length; i++) {
-        table[i] = [];
-        for (let j = 0; j < matrix[i].length; j++) {
-            table[i][j] = {
-                // Если это первая строка, то ячейки будут заголовочными
-                elemType: (i == 0 || j == 0) ? "th" : "td",
-                contentType: TEXT_TYPE,
-                value: matrix[i][j]
-            }   
+        if (matrix[i][1] < 0) {
+            for (let j = 1; j < matrix[i].length; j++) {
+                matrix[i][j] *= -1;
+            }
         }
     }
-    // Функция G
-    table[matrix.length] = [];
-    table[matrix.length][0] = {
-        elemType: "th",
-        contentType: TEXT_TYPE,
-        value: "g"
-    }
-    for (let j = 1; j < matrix[matrix.length - 1].length; j++) {
+    // Добавляем в матрицу строку с функцией G
+    matrix[matrix.length] = [];
+    matrix[matrix.length - 1][0] = "g";
+    for (let j = 1; j < matrix[0].length; j++) {
         let sum = 0;
         for (let i = 1; i < matrix.length - 1; i++) {
             sum += matrix[i][j] - 0;
         }
-        table[matrix.length][j] = {
-            elemType: "td",
-            contentType: TEXT_TYPE,
-            value: -sum || "0"
-        }
+        matrix[matrix.length - 1][j] = -sum;
     }
-    options.table = table;
+    // Создаем описание таблицы
+    let options = createOutputOptions("Step 0:", matrix);
     // Создаем таблицу по описанию и возвращаем её 
     return createTable(options);
 }
@@ -120,28 +104,12 @@ function createOutputMatrix(section) {
  * 
  * @param {Node} section - секция из которой будут браться данные для создания таблицы
  */
-function createInputMatrix(section) {
-    // Берем поля ввода параметров будущей таблицы
-    let inputs = section.querySelectorAll("." + INPUT_FIELD_CLASS)
-    // Считываем данные с полей ввода
-    let n = inputs[0].value - 0;    // Кол-во переменных в уравнениях
-    let m = inputs[1].value - 0;    // Кол-во уравнений в системе
-    // Проверка на пустой ввод
-    if (n == "") { 
-        alert("Количество переменных не задано!"); 
-        return; 
-    }
-    if (m == "") { 
-        alert("Количество уравнений не задано!"); 
-        return; 
-    }
-
+function createInputTable(n, m) {
     /*
      * Создаем описание таблицы
      */
     // Задаем класс таблицы и её заголовок
     let options = {};
-    options.clazz = INPUT_TABLE_CLASS;
     options.title = "Enter the matrix:";
     // Добавляем описание заголовочных ячеек таблицы
     // Их количество пропорционально количеству переменных в уравнении
@@ -150,7 +118,7 @@ function createInputMatrix(section) {
     table[0][0] = {
         elemType: "th",
         contentType: TEXT_TYPE,
-        value: ""
+        value: " "
     }
     table[0][1] = {
         elemType: "th",
@@ -191,7 +159,7 @@ function createInputMatrix(section) {
         value: "f"
     }
     table[m + 1][1] = {
-        elemType: "th",
+        elemType: "td",
         contentType: TEXT_TYPE,
         value: "0"
     }
@@ -212,44 +180,52 @@ function createInputMatrix(section) {
 window.onload = () => {
     // Берем все разделы
     let sections = document.querySelectorAll("." + SECTION_CLASS);
-
-    /*
-     * Добавляем переключение разделов
-     */
-    // Берем кнопки из первых двух разделов
+    // Берем кнопки из разделов
     let buttons = [
         sections[0].querySelector("." + SUBMIT_BUTTON_CLASS),
         sections[1].querySelector("." + SUBMIT_BUTTON_CLASS),
         sections[2].querySelector("." + SUBMIT_BUTTON_CLASS)
     ];
-    // Навешиваем на событие "click" действие по "переключению" разделов
-    [buttons[0], buttons[1]].forEach((button, index) => {
-        button.addEventListener("click", () => switchSection(sections[index], sections[index + 1]));
-    });
 
-    /*
-     * Добавляем событие "Создание таблицы для ввода значений" на кнопку из первого раздела
-     */
+    // Добавляем событие "Создание таблицы для ввода значений" на кнопку из первого раздела
     buttons[0].addEventListener("click", () => {
-        let tablesDiv = sections[1].querySelector("." + TABLES_DIV);
-        let table = createInputMatrix(sections[0]);
-        tablesDiv.appendChild(table);
+        // Берем поля ввода параметров будущей таблицы
+        let inputs = sections[0].querySelectorAll("." + INPUT_FIELD_CLASS)
+        // Считываем данные с полей ввода
+        let n = inputs[0].value - 0;    // Кол-во переменных в уравнениях
+        let m = inputs[1].value - 0;    // Кол-во уравнений в системе
+        // Проверка на пустой ввод
+        if (n == 0) { alert("Количество переменных не задано!"); return; }
+        if (m == 0) { alert("Количество уравнений не задано!"); return; }
+        // Создаем таблицу для ввода данных
+        let table = createInputTable(n, m);
+        sections[1].querySelector("." + TABLES_DIV).appendChild(table);
+        // Переключаем раздел
+        switchSection(sections[0], sections[1])
     });
 
-    /*
-     * Добавляем событие "Создание таблицы из введеных значений" на кнопку из второго раздела
-     */
+    // Добавляем событие "Создание таблицы из введеных значений" на кнопку из второго раздела
     buttons[1].addEventListener("click", () => {
-        let tablesDiv = sections[2].querySelector("." + TABLES_DIV);
-        let table = createOutputMatrix(sections[1]);
-        table.classList.add("active");
-        tablesDiv.appendChild(table);
+        // Берем таблицу с введенными данными
+        let inputTable = sections[1].querySelector("." + TABLES_DIV).children[0];
+        // Создаем таблицу с выходными данными
+        let table = createOutputTable(inputTable);
+        sections[2].querySelector("." + TABLES_DIV).appendChild(table);
+        // Переключаем раздел
+        switchSection(sections[1], sections[2])
     });
 
-    /*
-     * Добавляем событие "Создание таблицы с пересчитанными значениями" на кнопку из третьего раздела
-     */
+    // Добавляем событие "Создание таблицы с пересчитанными значениями" на кнопку из третьего раздела
     buttons[2].addEventListener("click", () => {
-
+        // Берем блок с таблицами
+        let tablesDiv = sections[2].querySelector("." + TABLES_DIV);
+        // Берем старую последнюю таблицу из блока и создаем её матрицу
+        let oldTable = tablesDiv.children[tablesDiv.children.length - 1];
+        let matrix = tableToMatrix(oldTable);
+        // Создаем новую таблицу с пересчитанными данными
+        let created = createNextTable(matrix, tablesDiv.children.length);
+        tablesDiv.appendChild(created.table);
+        // На старой таблице выделяем элемент
+        oldTable.rows[created.row].cells[created.col].classList.add("selected");
     });
 }
