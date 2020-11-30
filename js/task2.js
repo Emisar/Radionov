@@ -25,26 +25,241 @@ function switchSection(section1, section2) {
     }
 }
 
+function jordan2(matrix, row, column) {
+    let tempMatrix = [];
+    // Пересчитываем всю матрицу
+    for (let i = 0; i < matrix.length; i++) {
+        tempMatrix[i] = [];
+        for (let j = 0; j < matrix[i].length; j++) {
+            let tempVal = (matrix[i][j] * matrix[row][column] - matrix[i][column] * matrix[row][j]) / matrix[row][column];
+            tempMatrix[i][j] = tempVal;
+        }
+    }
+    // Пересчитываем столбец
+    for (let i = 0; i < matrix.length; i++) {
+        tempMatrix[i][column] = matrix[i][column] / matrix[row][column] * -1;
+    }
+    // Пересчитываем строку
+    for (let i = 0; i < matrix[row].length; i++) {
+        tempMatrix[row][i] = matrix[row][i] / matrix[row][column];
+    }
+    // Пересчитываем указанное значение
+    tempMatrix[row][column] = 1 / matrix[row][column];
+    return tempMatrix;
+}
+
+function turn2_6(matrix) {
+    let row = 1;
+    let col = 2;
+    let turn = 2;
+    let canBeSolve = true;
+    let isOptimal = false;
+
+    // Шаг 2 - проверка на наличее отрицательных чисел в строке G
+    let hasNegative = false;
+    for (let i = 2; i < matrix[matrix.length - 1].length; i++) {
+        const elem = matrix[matrix.length - 1][i];
+        if (elem < 0) {
+            hasNegative = true;
+            col = i;
+            break;
+        }
+    }
+
+    if (!hasNegative) {
+        let options = turn7_11(matrix);
+        matrix = options.matrix;
+        row = options.row;
+        col = options.col;
+        canBeSolve = options.canBeSolve;
+        turn = 7;
+    }
+    else {
+        // Шаг 3 - выбор наибольшего отрицательного значния в строке G 
+        let max = matrix[matrix.length - 1][col];
+        for (let i = 2; i < matrix[matrix.length - 1].length; i++) {
+            const elem = matrix[matrix.length - 1][i];
+            if (max < elem && elem < 0) {
+                max = elem;
+                col = i;
+            }
+        }
+
+        // Шаг 4 - проверка основной матрицы на наличее положительных чисел
+        let hasPositive = false;
+        for (let i = 1; i < matrix.length - 2; i++) {
+            const matrixRow = matrix[i];
+            for (let j = 1; j < matrixRow.length; j++) {
+                const elem = matrixRow[j];
+                if (elem > 0) {
+                    hasPositive = true;
+                    break;
+                }
+            }
+            if (hasPositive) break;
+        }
+        canBeSolve = hasPositive;
+        if (!canBeSolve) return { matrix, row, col, turn, canBeSolve, isOptimal };
+
+        // Шаг 5 - выбор наименьшего числа в выбранном столбце
+        for (let i = 0; i < matrix.length; i++) {
+            const elem = matrix[i];
+            if (elem > 0) {
+                row = i;
+                break;
+            }
+        }
+        let min = matrix[row][1] / matrix[row][col];
+        for (let i = 1; i < matrix.length - 2; i++) {
+            if (matrix[i][col] <= 0) continue;
+            const elem = matrix[i][1] / matrix[i][col];
+            if (min > elem) {
+                min = elem;
+                row = i;
+            }
+        }
+
+        // Шаг 6 - выполнение функции Жорданого исключения для выбранного элемента
+        let tempMatrix = [];
+        for (let i = 1; i < matrix.length; i++) {
+            const matrixRow = matrix[i];
+            tempMatrix[i - 1] = [];
+            for (let j = 1; j < matrixRow.length; j++) {
+                const elem = matrixRow[j];
+                tempMatrix[i - 1][j - 1] = elem;
+            }
+        }
+        tempMatrix = jordan2(tempMatrix, row - 1, col - 1);
+        for (let i = 0; i < tempMatrix.length; i++) {
+            const matrixRow = tempMatrix[i];
+            for (let j = 0; j < matrixRow.length; j++) {
+                const elem = matrixRow[j];
+                matrix[i + 1][j + 1] = elem;
+            }
+        }
+    }
+
+    return { matrix, row, col, turn, canBeSolve, isOptimal };
+}
+
+function turn7_11(matrix) {
+    let row = 1;
+    let col = 2;
+    let turn = 7;
+    let canBeSolve = true;
+    let isOptimal = false;
+
+
+    // Шаг 7 - проверка строк G и f
+    for (let i = 1; i < matrix[matrix.length - 1].length; i++) {
+        const gElem = matrix[matrix.length - 1][i];
+        const fElem = matrix[matrix.length - 2][i];
+        if (!(gElem == 0 && fElem >= 0)) {
+            isOptimal = true;
+            return { matrix, row, col, turn, canBeSolve, isOptimal };
+        }
+    }
+
+    // Шаг 8 - проверка строк G и f
+    for (let i = 2; i < matrix[matrix.length - 1].length; i++) {
+        const gElem = matrix[matrix.length - 1][i];
+        const fElem = matrix[matrix.length - 2][i];
+        let max = matrix[1][i];
+        if (gElem == 0 && fElem < 0) {
+            let maxInCol = matrix[1][i];
+            for (let j = 1; j < matrix.length; j++) {
+                const elem = matrix[j][i];
+                if (maxInCol < elem) {
+                    maxInCol = elem;
+                }
+            }
+            if (max < maxInCol) {
+                max = maxInCol;
+                col = i;
+            }
+        }
+    }
+
+    // Шаг 9 - проверка основной матрицы на наличее положительных чисел
+    let hasPositive = false;
+    for (let i = 1; i < matrix.length - 2; i++) {
+        const matrixRow = matrix[i];
+        for (let j = 1; j < matrixRow.length; j++) {
+            const elem = matrixRow[j];
+            if (elem > 0) {
+                hasPositive = true;
+                break;
+            }
+        }
+        if (hasPositive) break;
+    }
+    canBeSolve = hasPositive;
+    if (!canBeSolve) return { matrix, row, col, turn, canBeSolve, isOptimal };
+
+    // Шаг 10 - выбор наименьшего числа в выбранном столбце
+    for (let i = 0; i < matrix.length; i++) {
+        const elem = matrix[i];
+        if (elem > 0) {
+            row = i;
+            break;
+        }
+    }
+    let min = matrix[row][1] / matrix[row][col];
+    for (let i = 1; i < matrix.length - 2; i++) {
+        if (matrix[i][col] <= 0) continue;
+        const elem = matrix[i][1] / matrix[i][col];
+        if (min > elem) {
+            min = elem;
+            row = i;
+        }
+    }
+
+    // Шаг 11 - выполнение функции Жорданого исключения для выбранного элемента
+    let tempMatrix = [];
+    for (let i = 1; i < matrix.length; i++) {
+        const matrixRow = matrix[i];
+        tempMatrix[i - 1] = [];
+        for (let j = 1; j < matrixRow.length; j++) {
+            const elem = matrixRow[j];
+            tempMatrix[i - 1][j - 1] = elem;
+        }
+    }
+    tempMatrix = jordan2(tempMatrix, row - 1, col - 1);
+    for (let i = 0; i < tempMatrix.length; i++) {
+        const matrixRow = tempMatrix[i];
+        for (let j = 0; j < matrixRow.length; j++) {
+            const elem = matrixRow[j];
+            matrix[i + 1][j + 1] = elem;
+        }
+    }
+
+    return { matrix, row, col, turn, canBeSolve, isOptimal };
+}
+
 /**
  * Функция для пересчета матрицы
  * 
  * @param {Array of Array} matrix - матрица значений таблицы
  */
-function recountMatrix(matrix) {
-    // Избаляемся от отрицательных чисел на свободном члене
-    for (let i = 0; i < matrix.length - 1; i++) {
-        if (matrix[i][1] < 0) {
-            for (let j = 1; j < matrix[i].length; j++) {
-                matrix[i][j] *= -1;
-            }
-        }
+function recountMatrix(matrix, turn) {
+    let options = {};
+    if (turn == 2) {
+        options = turn2_6(matrix);
     }
-    let row = 1;
-    let col = 1;
+    if (turn == 7) {
+        options = turn7_11(matrix);
+    }
 
+    console.log(options);
+    matrix = options.matrix;
+    const row = options.row;
+    const col = options.col;
+    turn = options.turn;
+    const canBeSolve = options.canBeSolve;
+    const isOptimal = options.isOptimal;
 
     // Возвращаем готовую матрицу
-    return {row, col, matrix};
+    return { matrix, row, col, turn, canBeSolve, isOptimal };
 }
 
 /**
@@ -54,16 +269,22 @@ function recountMatrix(matrix) {
  * @param {Array of Array} matrix - матрица старой таблицы
  * @param {Integer} order - порядковый номер новой таблицы
  */
-function createNextTable(matrix, order) {
+function createNextTable(matrix, order, turn) {
     // Пересчитываем матрицу
-    const recount = recountMatrix(matrix);
+    const recount = recountMatrix(matrix, turn);
     matrix = recount.matrix;
+    const row = recount.row;
+    const col = recount.col;
+    turn = recount.turn;
+    const canBeSolve = recount.canBeSolve;
     // Создаем описание таблицы
     let options = createOutputOptions("Step " + order + ":", matrix);
     // Создаем таблицу по описанию и возвращаем её 
     return {
-        row: recount.row,
-        col: recount.col,
+        row,
+        col,
+        turn,
+        canBeSolve,
         table: createTable(options)
     };
 }
@@ -88,7 +309,7 @@ function createOutputTable(inputTable) {
     matrix[matrix.length - 1][0] = "g";
     for (let j = 1; j < matrix[0].length; j++) {
         let sum = 0;
-        for (let i = 1; i < matrix.length - 1; i++) {
+        for (let i = 1; i < matrix.length - 2; i++) {
             sum += matrix[i][j] - 0;
         }
         matrix[matrix.length - 1][j] = -sum;
@@ -178,6 +399,8 @@ function createInputTable(n, m) {
  * Главная функция - логика программы
  */
 window.onload = () => {
+    var turn = 2;
+
     // Берем все разделы
     let sections = document.querySelectorAll("." + SECTION_CLASS);
     // Берем кнопки из разделов
@@ -223,9 +446,15 @@ window.onload = () => {
         let oldTable = tablesDiv.children[tablesDiv.children.length - 1];
         let matrix = tableToMatrix(oldTable);
         // Создаем новую таблицу с пересчитанными данными
-        let created = createNextTable(matrix, tablesDiv.children.length);
+        let created = createNextTable(matrix, tablesDiv.children.length, turn);
         tablesDiv.appendChild(created.table);
         // На старой таблице выделяем элемент
         oldTable.rows[created.row].cells[created.col].classList.add("selected");
+        turn = created.turn;
+        let canBeSolve = created.canBeSolve;
+        let isOptimal = created.isOptimal;
+        if (!canBeSolve || (canBeSolve && isOptimal)) {
+            buttons[2].classList.add("hide");
+        }
     });
 }

@@ -125,7 +125,6 @@ function jordan(matrix, row, column) {
     tempMatrix[row][column] = 1 / matrix[row][column];
     // Удаляем обнулившееся значение
     tempMatrix = deleteColumn(tempMatrix, column);
-    console.log(tempMatrix);
     return tempMatrix;
     
 }
